@@ -11,6 +11,7 @@ class MoviesController < ApplicationController
     @sort = params['sort']
     @checked_ratings = params['ratings'] != nil ? params['ratings'].keys : @all_ratings 
     @movies = Movie.where(rating: @checked_ratings).order(@sort)
+    session[:return_to] = request.fullpath
   end
 
   def new
@@ -20,7 +21,7 @@ class MoviesController < ApplicationController
   def create
     @movie = Movie.create!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully created."
-    redirect_to movies_path
+    redirect_to(session[:return_to]) # movies_path
   end
 
   def edit
@@ -38,7 +39,7 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
-    redirect_to movies_path
+    redirect_to(session[:return_to]) # movies_path
   end
 
 end

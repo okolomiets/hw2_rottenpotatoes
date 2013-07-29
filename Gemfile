@@ -1,4 +1,6 @@
 source 'http://rubygems.org'
+# gem 'linecache19', :git => 'https://github.com/mark-moseley/linecache.git' 
+# gem 'ruby-debug-base19', :git => 'https://github.com/mark-moseley/ruby-debug.git'
 
 gem 'rails', '3.1.0'
 

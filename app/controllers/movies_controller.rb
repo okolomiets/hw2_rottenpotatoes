@@ -13,6 +13,7 @@ class MoviesController < ApplicationController
     @movies = Movie.where(rating: @checked_ratings).order(@sort)
     session[:sort] = @sort
     session[:ratings] = @checked_ratings
+    @ratings_hash = save_ratings(session[:ratings])
     # session[:return_to] = request.fullpath
   end
 
@@ -32,7 +33,7 @@ class MoviesController < ApplicationController
   def create
     @movie = Movie.create!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully created."
-    redirect_to movies_path(:sort => session[:sort], :ratings => save_ratings(session[:ratings])) # (session[:return_to]) # movies_path
+    redirect_to movies_path(:sort => session[:sort], :ratings => @ratings_hash) # (session[:return_to]) # movies_path
   end
 
   def edit
@@ -50,7 +51,7 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
-    redirect_to movies_path(:sort => session[:sort], :ratings => save_ratings(session[:ratings])) # (session[:return_to]) # movies_path
+    redirect_to movies_path(:sort => session[:sort], :ratings => @ratings_hash) # (session[:return_to]) # movies_path
   end
 
 end

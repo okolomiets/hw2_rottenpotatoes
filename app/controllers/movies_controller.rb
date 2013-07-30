@@ -7,14 +7,27 @@ class MoviesController < ApplicationController
   end
 
   def index
+
     @all_ratings = Movie.ratings # ['G','PG','PG-13','R']
-    @sort = params['sort'] == nil ? session[:sort] : params['sort']
-    @checked_ratings = params['ratings'] != nil ? params['ratings'].keys : (session[:ratings] != nil ? session[:ratings] : @all_ratings) # session[:ratings].keys 
-    @movies = Movie.where(rating: @checked_ratings).order(@sort)
-    session[:sort] = @sort
-    session[:ratings] = @checked_ratings
-    @ratings_hash = save_ratings(session[:ratings])
-    # session[:return_to] = request.fullpath
+    
+    if !['title','release_date', nil].include? params['sort']
+      # flash[:message] = "Sorting params are wrong. Redirecting to saved session..."
+      session[:sort] = session[:sort] != nil ? session[:sort] : nil
+      redirect_to movies_path(:sort => session[:sort], :ratings => params['ratings']) 
+    elsif params['ratings'] == nil
+      # flash[:message] = "Ratings params are missed. Redirecting to saved session..."
+      session[:ratings] = session[:ratings] != nil ? session[:ratings] : @all_ratings
+      redirect_to movies_path(:sort => params['sort'], :ratings => save_ratings(session[:ratings])) 
+    else
+      @sort = params['sort'] == nil ? session[:sort] : params['sort']
+      # @checked_ratings = params['ratings'] != nil ? params['ratings'].keys : (session[:ratings] != nil ? session[:ratings] : @all_ratings) # session[:ratings].keys 
+      @checked_ratings = params['ratings'].keys 
+      @movies = Movie.where(rating: @checked_ratings).order(@sort)
+      session[:sort] = @sort
+      session[:ratings] = @checked_ratings
+      @ratings_hash = save_ratings(session[:ratings])
+      # session[:return_to] = request.fullpath
+    end
   end
 
   def save_ratings(arr)

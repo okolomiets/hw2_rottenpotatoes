@@ -1,7 +1,7 @@
 class Movie < ActiveRecord::Base
 
 	def self.ratings
-		['G','PG','PG-13','R']
+		self.select("DISTINCT rating").collect {|p| p.rating}
 	end
 
 end
